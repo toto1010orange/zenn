@@ -3,7 +3,7 @@ title: "WSLでclip.exeにパイプした際文字化けしてしまう問題の�
 emoji: "❓"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["wsl","clip.exe"]
-published: true
+published: false
 ---
 ## この記事でわかること
 WSLで実行したあるコマンドの出力やファイル全体をwindowsのクリップボードにコピーする方法
