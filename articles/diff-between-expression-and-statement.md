@@ -3,7 +3,7 @@ title: "式と文の違い"
 emoji: "🧩"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["数学","プログラミング"]
-published: true
+published:  true
 ---
 ## はじめに
 1+1を1に1を足すことだと思っていませんか？もしその場合、その認識は間違っているかもしれません。
