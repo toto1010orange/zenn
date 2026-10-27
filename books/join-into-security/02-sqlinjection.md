@@ -86,7 +86,7 @@ usernameがbobである行が返るためbobになりすますことができま
 
 脆弱性が生まれている原因は問い合わせ文を組み立てる際、データと構文の区別をしていないこと、SQL文を作ってから構文を評価していることでした。
 以下の実装は構文とデータを別々に渡しています。
-SQL文のデータ部にデータであるという印を付けることで構文解析のあとデータ挿入を行うことで、SQLインジェクションを防いでいます。
+構文解析のあとデータ挿入を行うことで、SQLインジェクションを防いでいます。
 修正したファイルです。
 [https://github.com/toto1010orange/zenn/blob/main/materials/SQLinimakenai.py](https://github.com/toto1010orange/zenn/blob/main/materials/SQLinimakenai.py)
 構文解析をした後にデータを挿入するため、データが構文解析で評価されないという仕組みです。
