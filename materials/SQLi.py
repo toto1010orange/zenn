@@ -70,7 +70,7 @@ class RequestHandler(BaseHTTPRequestHandler):
 
 # 3. サーバーの起動
 if __name__ == '__main__':
-    server_address = ('', 8000)
+    server_address = ('127.0.0.1', 8000)
     httpd = HTTPServer(server_address, RequestHandler)
     print("サーバーを起動しました: http://localhost:8000")
     print("停止するには Ctrl+C を押してください")
