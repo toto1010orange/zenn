@@ -24,7 +24,7 @@ SELECT * FROM users WHERE username = '' OR 1=1--' AND password = ''
 WHEREが直接的には、users表から一行ずつ取り出し、username='{username}'という式がTrueかどうかを判定し、Trueの場合はその行を返すという処理をしています。
 そのためusername = ''はほとんどの場合、すべての行でFalseですが、1=1は常にTrueなためすべての行が返ってしまいます。
 ## 攻撃の実験(ローカル環境)
-[https://github.com/toto1010orange/zenn/blob/main/materials/SQLi.py](https://github.com/toto1010orange/zenn/blob/main/materials/SQLi.py)
+[https://github.com/toto1010orange/zenn/blob/main/materials/books/join-into-security/02/SQLi.py](https://github.com/toto1010orange/zenn/blob/main/materials/books/join-into-security/02/SQLi.py)
 コードをコピーして適当なファイル名で保存してもらえれば結構です。ただし念のため拡張子は.pyでお願いします。
 
 ちなみにこのコードはLLM(gemini)に作成してもらいました。
@@ -88,7 +88,50 @@ usernameがbobである行が返るためbobになりすますことができま
 以下の実装は構文とデータを別々に渡しています。
 SQL文のデータ部にデータであるという印を付けることで構文解析のあとデータ挿入を行うことで、SQLインジェクションを防いでいます。
 修正したファイルです。
-[https://github.com/toto1010orange/zenn/blob/main/materials/SQLinimakenai.py](https://github.com/toto1010orange/zenn/blob/main/materials/SQLinimakenai.py)
+[https://github.com/toto1010orange/zenn/blob/main/materials/books/join-into-security/02/SQLinimakenai.py](https://github.com/toto1010orange/zenn/blob/main/materials/books/join-into-security/02/SQLinimakenai.py)
 構文解析をした後にデータを挿入するため、データが構文解析で評価されないという仕組みです。
 サニタイジングなどの方法もありますが、根本的な解決にはならないことが多いため、データと構文を完全に分離するというアプローチをお勧めします。
+
+### 詳細な仕組み
+例としてこの文を取り上げます。
+```SQL
+SELECT username FROM users WHERE username = '{username}' AND password = '{password}'
+```
+#### まず、データを代入してから意味を解析する危険なパターンだと、username=' OR 1=1--を代入すると
+```SQL
+SELECT username FROM users WHERE username = '' OR 1=1-- AND pasword = ''
+```
+という文になります。この後に意味を解析すると
+usersテーブルのうち**usernameが空または1=1**が成り立つ行のusernameを返すという意味になります。
+
+#### 次にプレースホルダを使って意味解析の後にデータ代入をする場合は
+```SQL
+SELECT username FROM users WHERE username = ? AND password = ?
+```
+という文を使います。なぜならシングルクオンテーションを使ってデータであることを表す必要がないからです。
+まず意味解析をすると
+```
+usersテーブルのうち**usernameが一つ目のデータかつpasswordが二番目のデータ**が成り立つ行のusernameを返す
+```
+という意味です。
+次にデータ代入をします。
+?の部分は二番目の引数として、順番に渡すのが一般的です。
+:::details 引数とは
+引数とは関数などを呼び出す際に指定するデータのことです。
+len("AAA")なら"AAA"が引数です。
+普通、ひきすうと読みます。
+:::
+先ほどと同様に第二引数として`{"' OR 1=1--",""}`が設定されていた場合
+```
+usersテーブルのうち**usernameが' OR 1=1--かつpasswordが[空]**が成り立つ行のusernameを返す
+```
+という意味になります。
+
+### まとめ
+ユーザーからの入力をSQL文として絶対に評価させないようにする。
+プレースホルダとステークホルダとか似てる用語が多すぎる。
+
+### 関連資料
+私の知識の源です。短いため併せて読むことをお勧めします
+[IPA 安全なウェブサイトの作りかた - 1.1 SQLインジェクション](https://www.ipa.go.jp/security/vuln/websecurity/sql.html)
 

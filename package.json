@@ -18,6 +18,6 @@
   },
   "homepage": "https://github.com/toto1010orange/zenn#readme",
   "dependencies": {
-    "zenn-cli": "^0.5.8"
+    "zenn-cli": "^0.5.13"
   }
 }
