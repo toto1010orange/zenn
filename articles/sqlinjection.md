@@ -102,7 +102,7 @@ SELECT username FROM users WHERE username = '{username}' AND password = '{passwo
 ```
 #### まず、データを代入してから意味を解析する危険なパターンだと、username=' OR 1=1--を代入すると
 ```SQL
-SELECT username FROM users WHERE username = '' OR 1=1-- AND pasword = ''
+SELECT username FROM users WHERE username = '' OR 1=1--' AND password = ''
 ```
 という文になります。この後に意味を解析すると
 usersテーブルのうち**usernameが空または1=1**が成り立つ行のusernameを返すという意味になります。
